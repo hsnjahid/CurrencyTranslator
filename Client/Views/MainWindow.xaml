@@ -1,0 +1,69 @@
+﻿<Window x:Class="NumberToWord.Client.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NumberToWord.Client.Views"
+        xmlns:vm="clr-namespace:NumberToWord.Client.ViewModels"
+        mc:Ignorable="d"
+        Title="Currency Translator" MinHeight="200" MinWidth="400" Height="400" Width="600" >
+
+  <Window.DataContext>
+    <vm:TranslatorViewModel/>
+  </Window.DataContext>
+
+  <Border Padding="10" Background="LightGray">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <Grid Grid.Row="0">
+        <TextBox x:Name="UserInputTextBox" Margin="0,10" Padding="5,0" FontFamily="Arial" FontSize="16"
+                 Text="{Binding GivenNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock IsHitTestVisible="False" Margin="0,10" Padding="5,0" Foreground="DarkGray"
+                   FontFamily="Arial" FontWeight="Bold" FontSize="16"
+                   Text="Enter a number to covert...">
+          <TextBlock.Style>
+            <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Visibility" Value="Collapsed"/>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, ElementName=UserInputTextBox}" Value="">
+                  <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
+      </Grid>
+      <Border Grid.Row="1"  BorderThickness="2" BorderBrush="DarkGray">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Stretch">
+          <TextBlock Margin="0,10" FontFamily="Courier New" FontSize="16" TextWrapping="Wrap"
+                     Text="{Binding ConvertedNumberInWord}"/>
+        </ScrollViewer>
+      </Border>
+      <Grid Grid.Row="2">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Margin="0,2" Foreground="Red" TextWrapping="Wrap"
+                   Text="{Binding ErrorMessage}">
+          <TextBlock.Style>
+            <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Visibility" Value="Visible"/>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Mode=Self}}" Value="">
+                  <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
+        <Button Grid.Column="1" Margin="10 10 0 0" Style="{StaticResource CustomButton}" Content="Reset"
+                Command="{Binding ResetCommand}"/>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>
