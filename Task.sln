@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm", "Algorithm\Algo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgorithmsTest", "AlgorithmTest\AlgorithmsTest.csproj", "{3B0CD497-4A88-4B64-B56A-029BC0A1591A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumberToWord.Server", "Server\NumberToWord.Server\NumberToWord.Server.csproj", "{54E4099D-156F-4855-BD01-A6C6101CCB89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumberToWord.Server", "Server\NumberToWord.Server.csproj", "{54E4099D-156F-4855-BD01-A6C6101CCB89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
