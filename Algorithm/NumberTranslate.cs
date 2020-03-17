@@ -1,9 +1,104 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Algorithm
 {
   public static class NumberTranslate
   {
+    private static Dictionary<int, string> onesMap = new Dictionary<int, string>()
+    {
+      { 0, "zero" },
+      { 1, "one" },
+      { 2, "two" },
+      { 3, "three" },
+      { 4, "four" },
+      { 5, "five" },
+      { 6, "six" },
+      { 7, "seven" },
+      { 8, "eight" },
+      { 9, "nine" },
+      { 10, "ten" },
+      { 11, "eleven" },
+      { 12, "twelve" },
+      { 13, "thirteen" },
+      { 14, "fourteen" },
+      { 15, "fifteen" },
+      { 16, "sixteen" },
+      { 17, "seventeen" },
+      { 18, "eighteen" },
+      { 19, "nineteen" }
+    };
+
+    private static Dictionary<int, string> tensMap = new Dictionary<int, string>()
+    {
+      { 0, "zero" },
+      { 10, "ten" },
+      { 20, "twenty" },
+      { 30, "thirty" },
+      { 40, "forty" },
+      { 50, "fifty" },
+      { 60, "sixty" },
+      { 70, "seventy" },
+      { 80, "eighty" },
+      { 90, "ninety" }
+    };
+
+
+    private static void DivisionHelper(int dividend, int divisor, out int quotient, out int remainder)
+    {
+      quotient = dividend / divisor;
+      remainder = dividend % divisor;
+    }
+
+    public static string NumberToWords(int number)
+    {
+      if (number == 0)
+        return "zero";
+
+      if (number < 0)
+        return "minus " + NumberToWords(Math.Abs(number));
+
+      string words = "";
+
+      if ((number / 1000000) > 0)
+      {
+        words += NumberToWords(number / 1000000) + " million ";
+        number %= 1000000;
+      }
+
+      if ((number / 1000) > 0)
+      {
+        words += NumberToWords(number / 1000) + " thousand ";
+        number %= 1000;
+      }
+
+      if ((number / 100) > 0)
+      {
+        words += NumberToWords(number / 100) + " hundred ";
+        number %= 100;
+      }
+
+      if (number > 0)
+      {
+        if (words != "")
+          words += "and ";
+
+        if (number < 20)
+        {
+          words += onesMap[number];
+        }
+        else
+        {
+
+          words += tensMap[number / 10];
+          if ((number % 10) > 0)
+            words += "-" + onesMap[number % 10];
+        }
+      }
+
+      return words;
+    }
+
     // decimal point
     private const string _decimalPoint = ".";
 
