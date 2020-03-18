@@ -9,16 +9,19 @@ namespace NumberToWord.Client.ViewModels
   public class RelayCommand : ICommand
   {
     #region Fields
-    private Action _action;
+    private Action _execute;
+    private Func<object, bool> _canExecute;
+    private bool _canExecuteCache = true;
     #endregion
 
     #region Constructors
     /// <summary>
     /// Initializes a new instance of the <see cref="RelayCommand"/> class.
     /// </summary>  
-    public RelayCommand(Action action)
+    public RelayCommand(Action execute, Func<object, bool> canExecute = null)
     {
-      _action = action;
+      _execute = execute;
+      _canExecute = canExecute;
     }
     #endregion
 
@@ -31,22 +34,34 @@ namespace NumberToWord.Client.ViewModels
 
     #region ICommand
     /// <summary>
-    /// A relay command can always execute
+    /// A relay command can execute or not
     /// </summary>
-    /// <param name="parameter"></param>
-    /// <returns></returns>
     public bool CanExecute(object parameter)
     {
-      return true;
+      if (_canExecute != null)
+      {
+        bool canExecute = _canExecute(parameter);
+
+        if (_canExecuteCache != canExecute)
+        {
+          _canExecuteCache = canExecute;
+
+          if (CanExecuteChanged != null)
+          {
+            CanExecuteChanged(this, new EventArgs());
+          }
+        }
+      }
+
+      return _canExecuteCache;
     }
 
     /// <summary>
     /// Executes the commands Action
     /// </summary>
-    /// <param name="parameter"></param>
     public void Execute(object parameter)
     {
-      _action();
+      _execute();
     }
     #endregion
   }

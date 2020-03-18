@@ -1,4 +1,6 @@
 ﻿using Algorithm;
+using System;
+using System.ServiceModel;
 
 namespace NumberToWord.Server
 {
@@ -12,7 +14,14 @@ namespace NumberToWord.Server
     /// </summary>
     public string ToWord(double number)
     {
-      return NumberTranslate.ConvertToWords(number);
+      try
+      {
+        return CurrencyRepresenter.RepresentsToDollar(number);
+      }
+      catch (Exception e)
+      {
+        throw new FaultException(e.Message);
+      }
     }
   }
 }

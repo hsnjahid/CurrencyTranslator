@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ServiceModel;
 using System.Windows.Input;
 
 namespace NumberToWord.Client.ViewModels
@@ -21,7 +22,7 @@ namespace NumberToWord.Client.ViewModels
     #region Properties
 
     /// <summary>
-    /// 
+    /// Sets or gets the given number to convert into words
     /// </summary>
     public string GivenNumber
     {
@@ -36,15 +37,16 @@ namespace NumberToWord.Client.ViewModels
         {
           _givenNumber = value;
           OnPropertyChanged(nameof(GivenNumber));
-          OnPropertyChanged(nameof(ConvertedNumberInWord));
+          OnPropertyChanged(nameof(NumberInWordRepresentation));
+          ResetCommand.CanExecute(value);
         }
       }
     }
 
     /// <summary>
-    /// 
+    /// Gets the number as verbal represented words
     /// </summary>
-    public string ConvertedNumberInWord
+    public string NumberInWordRepresentation
     {
       get
       {
@@ -54,14 +56,14 @@ namespace NumberToWord.Client.ViewModels
         {
           try
           {
-            double.TryParse(_givenNumber, out var result);
+            var result = double.Parse(_givenNumber);
             var translateClient = new Translate.TranslateServiceClient();
             numberInwords = translateClient.ToWord(result);
           }
-          catch (Exception e)
+          // ignore format+overflow exception
+          catch (FaultException e)
           {
-            _errorMsg = e.Message;
-            OnPropertyChanged(nameof(ErrorMessage));
+            ErrorMessage = e.Message;
           }
         }
 
@@ -70,9 +72,9 @@ namespace NumberToWord.Client.ViewModels
     }
 
     /// <summary>
-    /// 
+    /// Gets or sets the error message
     /// </summary>
-    public string ErrorMessage => _errorMsg;
+    public string ErrorMessage { get; set; }
 
     public string Error => throw new NotImplementedException();
 
@@ -91,15 +93,29 @@ namespace NumberToWord.Client.ViewModels
     /// </summary>  
     public TranslatorViewModel()
     {
-      ResetCommand = new RelayCommand(OnResetClearData);
+      // init command
+      ResetCommand = new RelayCommand(ResetResults, CanReset);
     }
     #endregion
 
-
-    #region Private Helpers
-    private void OnResetClearData()
+    #region Helpers
+    /// <summary>
+    /// Can ResetCommand execute
+    /// </summary>
+    private bool CanReset(object arg)
     {
+      return !string.IsNullOrEmpty(arg?.ToString());
+    }
+
+    /// <summary>
+    /// On command clear
+    /// </summary>
+    private void ResetResults()
+    {
+      // clear input field
       GivenNumber = string.Empty;
+      // clear error message
+      ErrorMessage = string.Empty;
     }
     #endregion
   }
