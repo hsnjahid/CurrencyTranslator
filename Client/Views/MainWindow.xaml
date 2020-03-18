@@ -21,14 +21,26 @@
       </Grid.RowDefinitions>
       <Grid Grid.Row="0">
         <TextBox x:Name="UserInputTextBox" Margin="0,10" Padding="5,0" FontFamily="Arial" FontSize="16"
-                 Text="{Binding GivenNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding GivenNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=0{0.0}, ValidatesOnDataErrors=True}">
+          <TextBox.Style>
+            <Style TargetType="{x:Type TextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                  <Setter Property="Background" Value="Red"/>
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </TextBox.Style>         
+        </TextBox>
         <TextBlock IsHitTestVisible="False" Margin="0,10" Padding="5,0" Foreground="DarkGray"
                    FontFamily="Arial" FontWeight="Bold" FontSize="16"
-                   Text="Enter a number to covert...">
+                   Text="Enter a number to convert...">
           <TextBlock.Style>
             <Style TargetType="{x:Type TextBlock}">
               <Setter Property="Visibility" Value="Collapsed"/>
-              <Style.Triggers>
+              <Style.Triggers>                
                 <DataTrigger Binding="{Binding Text, ElementName=UserInputTextBox}" Value="">
                   <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>

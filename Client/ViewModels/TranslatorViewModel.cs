@@ -8,8 +8,7 @@ namespace NumberToWord.Client.ViewModels
   public class TranslatorViewModel : ViewModelBase, IDataErrorInfo
   {
     #region Fields
-    private string _givenNumber;
-    private string _errorMsg;
+    private double? _givenNumber;
     #endregion
 
     #region Commands
@@ -24,16 +23,12 @@ namespace NumberToWord.Client.ViewModels
     /// <summary>
     /// Sets or gets the given number to convert into words
     /// </summary>
-    public string GivenNumber
+    public double? GivenNumber
     {
       get => _givenNumber;
       set
       {
-        if (_givenNumber == value)
-        {
-          return;
-        }
-        if (_givenNumber == null || (_givenNumber.Equals(value) != true))
+        if (_givenNumber.Equals(value) != true)
         {
           _givenNumber = value;
           OnPropertyChanged(nameof(GivenNumber));
@@ -50,23 +45,24 @@ namespace NumberToWord.Client.ViewModels
     {
       get
       {
-        string numberInwords = string.Empty;
+        string numberInwords = null;
 
-        if (!string.IsNullOrEmpty(_givenNumber))
+        if (_givenNumber.HasValue)
         {
-          try
+          if (_givenNumber.Value >= 0 && _givenNumber.Value <= 999999999.99) // input limit
           {
-            var result = double.Parse(_givenNumber);
-            var translateClient = new Translate.TranslateServiceClient();
-            numberInwords = translateClient.ToWord(result);
-          }
-          // ignore format+overflow exception
-          catch (FaultException e)
-          {
-            ErrorMessage = e.Message;
+            try
+            {
+              var translateClient = new Translate.TranslateServiceClient();
+              numberInwords = translateClient.ToWord(_givenNumber.Value);
+            }
+            // ignore format+overflow exception
+            catch (FaultException e)
+            {
+              ErrorMessage = e.Message;
+            }
           }
         }
-
         return numberInwords;
       }
     }
@@ -82,7 +78,19 @@ namespace NumberToWord.Client.ViewModels
     {
       get
       {
-        return "No valid";
+        string result = "";
+
+        if (columnName == nameof(GivenNumber))
+        {
+          if (_givenNumber.HasValue)
+          {
+            if (!(_givenNumber.Value > 0 && _givenNumber.Value <= 999999999.99))
+            {
+              result = "Number can be negative or greater than 999.999.999,99";
+            }
+          }
+        }
+        return result;
       }
     }
     #endregion
@@ -104,7 +112,7 @@ namespace NumberToWord.Client.ViewModels
     /// </summary>
     private bool CanReset(object arg)
     {
-      return !string.IsNullOrEmpty(arg?.ToString());
+      return (arg as double?).HasValue;
     }
 
     /// <summary>
@@ -113,7 +121,7 @@ namespace NumberToWord.Client.ViewModels
     private void ResetResults()
     {
       // clear input field
-      GivenNumber = string.Empty;
+      GivenNumber = null; // string.Empty;
       // clear error message
       ErrorMessage = string.Empty;
     }
