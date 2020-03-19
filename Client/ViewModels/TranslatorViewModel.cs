@@ -9,6 +9,7 @@ namespace NumberToWord.Client.ViewModels
   {
     #region Fields
     private double? _givenNumber;
+    private string _errorMessage;
     #endregion
 
     #region Commands
@@ -46,7 +47,7 @@ namespace NumberToWord.Client.ViewModels
       get
       {
         string numberInwords = null;
-        string errorMag = null;
+        string errorMessage = null;
 
         if (_givenNumber.HasValue)
         {
@@ -57,23 +58,23 @@ namespace NumberToWord.Client.ViewModels
               var translateClient = new Translate.TranslateServiceClient();
               numberInwords = translateClient.ToWord(_givenNumber.Value);
             }
-            // ignore format+overflow exception
-            catch (FaultException e)
+            catch (Exception e)
             {
-              errorMag = e.Message;
+              errorMessage = e.Message;
             }
           }
           else
           {
-            errorMag = "Number can not be negative or greater than 999 999 999,99";
+            errorMessage = @"Number can not be negative or greater than '999 999 999,99'";
           }
 
-          if (!string.IsNullOrEmpty(errorMag))
+          if (_errorMessage != errorMessage)
           {
-            ErrorMessage = errorMag;
+            _errorMessage = errorMessage;
             OnPropertyChanged(nameof(ErrorMessage));
           }
         }
+
         return numberInwords;
       }
     }
@@ -81,7 +82,7 @@ namespace NumberToWord.Client.ViewModels
     /// <summary>
     /// Gets or sets the error message
     /// </summary>
-    public string ErrorMessage { get; set; }
+    public string ErrorMessage => _errorMessage;
     #endregion
 
     #region Constructors
@@ -111,7 +112,7 @@ namespace NumberToWord.Client.ViewModels
     {
       // clear input field  and error message
       GivenNumber = null;
-      ErrorMessage = null;
+      _errorMessage = null;
       OnPropertyChanged(nameof(ErrorMessage));
     }
     #endregion

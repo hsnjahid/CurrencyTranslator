@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NumberToWord.Client.Views"
         xmlns:vm="clr-namespace:NumberToWord.Client.ViewModels"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Currency Representer" MinHeight="200" MinWidth="400" Height="400" Width="600" >
   
@@ -58,15 +59,15 @@
       <Grid Grid.Row="0">
         <TextBox x:Name="UserInputTextBox" Margin="0,10" Padding="5,0" FontWeight="Bold" FontSize="16" 
                  BorderBrush="{StaticResource ForegroundDarkBrush}" BorderThickness="2" VerticalAlignment="Center"
-                 Text="{Binding GivenNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=0{00.0}, ConverterCulture='de-DE'}" />
+                 Text="{Binding GivenNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Static sys:String.Empty}, StringFormat=0{00.0}, ConverterCulture='de-DE'}"/>
         <TextBlock IsHitTestVisible="False" Margin="0,10" Padding="5,0" FontWeight="Bold" FontSize="16"
                    Foreground="{StaticResource BackgroundVeryLightBrush}" VerticalAlignment="Center"
-                   Text="Enter a number to convert...">
+                   Text="Enter a number to translate into words...">
           <TextBlock.Style>
             <Style TargetType="{x:Type TextBlock}">
               <Setter Property="Visibility" Value="Collapsed"/>
               <Style.Triggers>
-                <DataTrigger Binding="{Binding Text, ElementName=UserInputTextBox}" Value="">
+                <DataTrigger Binding="{Binding Text, ElementName=UserInputTextBox}" Value="{x:Static sys:String.Empty}">
                   <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
               </Style.Triggers>
@@ -92,7 +93,7 @@
             <Style TargetType="{x:Type Border}" BasedOn="{StaticResource CustomBorder}">
               <Setter Property="Visibility" Value="Visible"/>
               <Style.Triggers>
-                <DataTrigger Binding="{Binding Text, ElementName=ErrorMsgTextBox}" Value="">
+                <DataTrigger Binding="{Binding Text, ElementName=ErrorMsgTextBox}" Value="{x:Static sys:String.Empty}">
                   <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
               </Style.Triggers>

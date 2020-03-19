@@ -19,12 +19,6 @@ namespace Algorithm
     /// </summary>
     public static string RepresentsToDollar(double number)
     {
-      // validation check
-      if (!(number >= 0))
-      {
-        throw new InvalidOperationException("Currency can not be nagitive");
-      }
-
       int wholeNumberPart = (int)number; // whole number part
       string wholeNumberPartToWord = NumberTranslator.Translate(wholeNumberPart);
       string decimalPartToWords = string.Empty;
