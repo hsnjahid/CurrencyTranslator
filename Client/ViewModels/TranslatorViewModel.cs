@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace NumberToWord.Client.ViewModels
 {
-  public class TranslatorViewModel : ViewModelBase, IDataErrorInfo
+  public class TranslatorViewModel : ViewModelBase
   {
     #region Fields
     private double? _givenNumber;
@@ -28,7 +28,7 @@ namespace NumberToWord.Client.ViewModels
       get => _givenNumber;
       set
       {
-        if (_givenNumber.Equals(value) != true)
+        if (_givenNumber != value)
         {
           _givenNumber = value;
           OnPropertyChanged(nameof(GivenNumber));
@@ -46,6 +46,7 @@ namespace NumberToWord.Client.ViewModels
       get
       {
         string numberInwords = null;
+        string errorMag = null;
 
         if (_givenNumber.HasValue)
         {
@@ -59,8 +60,18 @@ namespace NumberToWord.Client.ViewModels
             // ignore format+overflow exception
             catch (FaultException e)
             {
-              ErrorMessage = e.Message;
+              errorMag = e.Message;
             }
+          }
+          else
+          {
+            errorMag = "Number can not be negative or greater than 999 999 999,99";
+          }
+
+          if (!string.IsNullOrEmpty(errorMag))
+          {
+            ErrorMessage = errorMag;
+            OnPropertyChanged(nameof(ErrorMessage));
           }
         }
         return numberInwords;
@@ -71,28 +82,6 @@ namespace NumberToWord.Client.ViewModels
     /// Gets or sets the error message
     /// </summary>
     public string ErrorMessage { get; set; }
-
-    public string Error => throw new NotImplementedException();
-
-    public string this[string columnName]
-    {
-      get
-      {
-        string result = "";
-
-        if (columnName == nameof(GivenNumber))
-        {
-          if (_givenNumber.HasValue)
-          {
-            if (!(_givenNumber.Value > 0 && _givenNumber.Value <= 999999999.99))
-            {
-              result = "Number can be negative or greater than 999.999.999,99";
-            }
-          }
-        }
-        return result;
-      }
-    }
     #endregion
 
     #region Constructors
@@ -120,10 +109,10 @@ namespace NumberToWord.Client.ViewModels
     /// </summary>
     private void ResetResults()
     {
-      // clear input field
-      GivenNumber = null; // string.Empty;
-      // clear error message
-      ErrorMessage = string.Empty;
+      // clear input field  and error message
+      GivenNumber = null;
+      ErrorMessage = null;
+      OnPropertyChanged(nameof(ErrorMessage));
     }
     #endregion
   }
