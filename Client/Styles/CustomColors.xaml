@@ -11,8 +11,8 @@
   <Color x:Key="BackgroundDark">#647F90</Color>
   <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDark}" />
 
-  <Color x:Key="ForegroundMain">#686868</Color>
-  <SolidColorBrush x:Key="ForegroundMainBrush" Color="{StaticResource ForegroundMain}" />
+  <Color x:Key="BackgroundDisabled">#E7EBEE</Color>
+  <SolidColorBrush x:Key="BackgroundDisabledBrush" Color="{StaticResource BackgroundDisabled}" />
 
   <Color x:Key="ForegroundLight">#435560</Color>
   <SolidColorBrush x:Key="ForegroundLightBrush" Color="{StaticResource ForegroundLight}" />
@@ -22,9 +22,6 @@
 
   <Color x:Key="ForegroundVeryDark">#192024</Color>
   <SolidColorBrush x:Key="ForegroundVeryDarkBrush" Color="{StaticResource ForegroundVeryDark}" />
-
-  <Color x:Key="BackgroundDisabled">#E7EBEE</Color>
-  <SolidColorBrush x:Key="BackgroundDisabledBrush" Color="{StaticResource BackgroundDisabled}" />
 
   <Color x:Key="ForegroundDisabled">#CFD8DE</Color>
   <SolidColorBrush x:Key="ForegroundDisabledBrush" Color="{StaticResource ForegroundDisabled}" />

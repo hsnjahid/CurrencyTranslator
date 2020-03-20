@@ -28,12 +28,5 @@ namespace AlgorithmTest
       output = CurrencyRepresenter.RepresentsToDollar(999999999.99);
       Assert.AreEqual("nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine dollars and ninety-nine cents", output, true);
     }
-
-    [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void TestInputValidation()
-    {
-      var output = CurrencyRepresenter.RepresentsToDollar(-20.0);
-    }
   }
 }

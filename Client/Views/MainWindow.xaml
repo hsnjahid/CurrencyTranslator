@@ -104,8 +104,7 @@
                      Text="{Binding ErrorMessage}" />
         </Border>
         <!--Reset-->
-        <Button Grid.Column="1" Margin="10,10,0,0" Style="{StaticResource CustomButton}"
-                Content="Reset" 
+        <Button Grid.Column="1" Margin="10,10,0,0" Content="Reset" Style="{StaticResource CustomButton}"
                 Command="{Binding ResetCommand}" CommandParameter="{Binding GivenNumber}"/>
       </Grid>
     </Grid>
