@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NumberToWord.Client.ViewModels
@@ -9,9 +10,9 @@ namespace NumberToWord.Client.ViewModels
   public class TranslatorViewModel : ViewModelBase
   {
     #region Fields
-    private double? _givenNumber;
+    private string _numberInWork;
     private string _errorMessage;
-    private TranslateServiceClient _translateClient;
+    private TranslateServiceClient _translateClient = new TranslateServiceClient();
     #endregion
 
     #region Commands
@@ -19,59 +20,47 @@ namespace NumberToWord.Client.ViewModels
     /// The command to clear the window
     /// </summary>
     public ICommand ResetCommand { get; set; }
+
+    public ICommand ConvertNumberCommand { get; set; }
+
     #endregion
 
     #region Properties
-
-    /// <summary>
-    /// Sets or gets the given number to convert into words
-    /// </summary>
-    public double? GivenNumber
-    {
-      get => _givenNumber;
-      set
-      {
-        if (_givenNumber != value)
-        {
-          _givenNumber = value;
-          OnPropertyChanged(nameof(GivenNumber));
-          OnPropertyChanged(nameof(NumberInWordRepresentation));
-          ResetCommand.CanExecute(value);
-        }
-      }
-    }
+    public double? GivenNumber { get; set; }
 
     /// <summary>
     /// Gets the number as verbal represented words
     /// </summary>
-    public string NumberInWordRepresentation
-    {
-      get
-      {
-        // clear error message
-        _errorMessage = String.Empty;
+    public string NumberInWordRepresentation => _numberInWork;
+    //{
+    //  get
+    //  {
+    //    // clear error message
+    //    _errorMessage = String.Empty;
 
-        string numberInwords = null;
+    //    string numberInwords = null;
 
-        if (_givenNumber.HasValue)
-        {
-          var number = _givenNumber.Value;
+    //    if (_givenNumber.HasValue)
+    //    {
+    //      var number = _givenNumber.Value;
 
-          if (number >= 0 && number <= 999999999.99) // input limit
-          {
-            numberInwords = ConvertAndLogError(number);
-          }
-          else
-          {
-            _errorMessage = @"Number can not be negative or greater than 999 999 999,99";
-          }
+    //      if (number >= 0 && number <= 999999999.99) // input limit
+    //      {
+    //        Task.Run(async ()=> await ConvertNumberAsync(number).Result));
 
-          OnPropertyChanged(nameof(ErrorMessage));
-        }
+    //        numberInwords = ConvertNumberAsync(number).Result;
+    //      }
+    //      else
+    //      {
+    //        _errorMessage = @"Number can not be negative or greater than 999 999 999,99";
+    //      }
 
-        return numberInwords;
-      }
-    }
+    //      OnPropertyChanged(nameof(ErrorMessage));
+    //    }
+
+    //    return numberInwords;
+    //  }
+    //}
 
     /// <summary>
     /// Gets the error message
@@ -85,9 +74,9 @@ namespace NumberToWord.Client.ViewModels
     /// </summary>  
     public TranslatorViewModel()
     {
-      _translateClient = new TranslateServiceClient();
       // init command
-      ResetCommand = new RelayCommand(ResetResults, CanReset);
+      ResetCommand = new RelayCommand(ResetResults, ()=> true);
+      ConvertNumberCommand = new RelayCommand(() => ConvertNumberAsync());
     }
     #endregion
 
@@ -124,6 +113,28 @@ namespace NumberToWord.Client.ViewModels
       }
 
       return words;
+    }
+
+    /// <summary>
+    /// Convert a number to words as well as log error message
+    /// </summary>
+    private async Task ConvertNumberAsync()
+    {
+      string errorMsg = "Converting number failed";
+
+      await Task.Run(() =>
+      {
+        try
+        {
+          _numberInWork = _translateClient.ToWord(GivenNumber.Value);
+        }
+        catch (Exception e)
+        {
+          throw new Exception(errorMsg, e);
+        }
+      });
+
+      OnPropertyChanged(nameof(NumberInWordRepresentation));
     }
 
 

@@ -15,7 +15,7 @@ namespace NumberToWord.Client.ViewModels
     /// <summary>
     /// Call this to fire a <see cref="PropertyChanged"/> event
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="name">name of the property</param>
     public void OnPropertyChanged(string name)
     {
       PropertyChanged(this, new PropertyChangedEventArgs(name));
